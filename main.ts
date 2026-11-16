@@ -77,6 +77,21 @@ console.log(`mint:            ${mint}`);
 console.log(`create tx:       ${createSignature}`);
 console.log(`pump.fun:        https://pump.fun/coin/${mint}`);
 console.log(`bounty:          ${BOUNTY_URL}`);
+// Shift clock: the bounty deadline is 17 Nov 2026 13:00 WIB (06:00 UTC).
+// Report how long is left on the clock and whether the owl is on shift
+// (night hours 18:00-06:00 UTC) — the hours this coin is named after.
+const deadlineMs = Date.parse('2026-11-17T06:00:00Z');
+const leftMs = deadlineMs - Date.now();
+if (leftMs > 0) {
+  const h = Math.floor(leftMs / 3600000);
+  const m = Math.floor((leftMs % 3600000) / 60000);
+  console.log(`shift clock:     ${h}h ${m}m left until the bounty deadline`);
+} else {
+  console.log('shift clock:     deadline passed — the shift has ended');
+}
+const utcHour = new Date().getUTCHours();
+const onShift = utcHour >= 18 || utcHour < 6;
+console.log(`owl status:      ${onShift ? 'ON SHIFT — night hours, the owl is working' : 'off shift — daylight hours, the owl rests'}`);
 if (coin) {
   const usd = typeof coin.usd_market_cap === 'number' ? coin.usd_market_cap.toFixed(2) : 'n/a';
   console.log(`live name:       ${coin.name} (${coin.symbol})`);
