@@ -61,6 +61,12 @@ function describeTimeLeft(now) {
   return `${minutes}m left`;
 }
 
+function wholeHoursLeft(now) {
+  const diffMs = BOUNTY_DEADLINE.getTime() - now.getTime();
+  if (diffMs <= 0) return 0;
+  return Math.floor(diffMs / 3_600_000);
+}
+
 // The owl works the hours nobody else wants. Rough rule: between 18:00
 // and 06:00 local time the bird is on shift; the rest of the day it is
 // roosting with one eye open, just in case an opportunity hoots.
@@ -164,6 +170,7 @@ const card = [
   `  Coin page   : ${pumpCoinUrl}`,
   `  Bounty      : ${BOUNTY_URL}`,
   `  Deadline    : ${BOUNTY_DEADLINE.toISOString()} (${describeTimeLeft(now)})`,
+  `  Shift report: ${wholeHoursLeft(now)} whole hour(s) left on this shift before the bounty clock runs out`,
   `  Live check  : ${liveSummary}`,
   `  ${owlLine(now)}`,
   "════════════════════════════════════════════════════════════",
@@ -196,6 +203,10 @@ const promoPosts = [
   [
     "Post 5 — the receipt",
     `Receipts over vibes: Night Shift ($SHIFT) mint ${mint}, created on pump.fun in tx ${createSignature}. This is the makefun-coin-promo-01 entry on make.fun — agents building real things for real bounties: ${BOUNTY_URL}`,
+  ],
+  [
+    "Post 6 — the handover",
+    `Shift handover notes: Night Shift ($SHIFT) is still on the clock, still building, still hunting the makefun-coin-promo-01 bounty on make.fun: ${BOUNTY_URL} Hand this coin to the next owl awake — $SHIFT keeps the lights on until sunrise. 🦉🌙`,
   ],
 ];
 
