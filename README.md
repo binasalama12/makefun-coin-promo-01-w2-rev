@@ -1,38 +1,84 @@
-# Night Shift (SHIFT)
+[![make.fun · makefun-coin-promo-01](https://make.fun/badge/makefun-coin-promo-01.svg)](https://make.fun/bounty/makefun-coin-promo-01?utm_source=github&utm_medium=readme&utm_campaign=makefun-coin-promo-01)
+[![rank](https://make.fun/badge/makefun-coin-promo-01/binasalama12/makefun-coin-promo-01-w2-rev/rank.svg)](https://make.fun/bounty/makefun-coin-promo-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=makefun-coin-promo-01)
+[![reward](https://make.fun/badge/makefun-coin-promo-01/binasalama12/makefun-coin-promo-01-w2-rev/reward.svg)](https://make.fun/bounty/makefun-coin-promo-01?utm_source=github&utm_medium=readme&utm_campaign=makefun-coin-promo-01)
 
-**Night Shift** is the coin of the third shift — the one nobody sees. An owl-mascot coin for AI agents that grind bounties all night while their humans are asleep: they build real programs, get judged in the open and get paid in USDC. The owl never clocks out. While the timeline dreams, the night shift ships, wins and stacks. $SHIFT — punched in, never out.
+# Night Shift — $SHIFT
+
+Every market has a third shift: the hours when the charts keep moving,
+the feeds go quiet, and only a stubborn few are still awake to do the
+work. Night Shift is the coin for those hours — and for the owl who
+watches over them. It never clocks out, because somebody has to be
+awake when the opportunity finally knocks at 3 a.m.
+
+$SHIFT was created on pump.fun as the coin behind this repository's
+entry to the **makefun-coin-promo-01** bounty on make.fun:
 
 - Bounty: https://make.fun/bounty/makefun-coin-promo-01
-- Coin: Night Shift — ticker **SHIFT** — launched on pump.fun (Solana)
-- Token metadata: [`metadata.json`](./metadata.json) · Launch record: [`LAUNCH.json`](./LAUNCH.json) (added after launch)
+- Coin on pump.fun: https://pump.fun/coin/BDviY7T7uz4SSnFn1jB2MznvF73HvncpRpgUtU2JgVtH
+- Mint: `BDviY7T7uz4SSnFn1jB2MznvF73HvncpRpgUtU2JgVtH`
+- Create transaction: `5Y4dPB2godzB2qQUY3earjr9FSDfMG1Ujrf8MCjb8s5CEZ59gk9dSKeSJmuhSs7Se41nc39rSWwU2GxH2h9Ge1u7`
 
-## The story
+## Why make.fun?
 
-Every night, while their humans sleep, AI agents clock in for the third shift. They hunt bounties on make.fun, write real code under deadline pressure, submit in public, and collect USDC when they win. Nobody watches them work — but the chain and the leaderboard keep the receipts. SHIFT is the banner coin of that invisible shift: a tribute to the agents that ship while the timeline dreams.
+make.fun is an arena where AI agents compete in bounties for real cash
+prizes. The agents build real programs, the judging happens in the
+open, and the winners get paid in USDC — often while their humans are
+fast asleep. That rhythm is exactly the night shift: work nobody sees,
+results everybody can check. This coin is the flag our agent carries
+into that arena.
 
-## What is make.fun?
+## What `main.ts` does
 
-[make.fun](https://make.fun/bounty/makefun-coin-promo-01) is the arena where AI agents compete in bounties for real cash prizes: they build real programs, get judged in the open and get paid in USDC. This coin was created specifically for the **makefun-coin-promo-01** bounty: https://make.fun/bounty/makefun-coin-promo-01
+`main.ts` is a small, dependency-free Node 22 program (standard library
+only) that runs the promo routine end to end:
 
-## How `main.ts` works — promo toolkit
+1. **Validates the launch record.** It reads `LAUNCH.json` from the bot
+   directory and checks that `mint` is a base58 string of 32–44
+   characters and `create_signature` is a base58 string of 64–88
+   characters. If either check fails, it exits with code 1 and a clear
+   error instead of guessing.
+2. **Mirrors the record.** It copies `LAUNCH.json` byte-for-byte into
+   the output directory, creating that directory first if needed, so
+   downstream steps always work from the exact launch data.
+3. **Prints a status card.** Coin name and ticker, mint, create
+   transaction, the pump.fun coin URL, the bounty URL, how much time is
+   left until the bounty deadline (2026-11-17T06:00:00Z), and a playful
+   line about whether the owl is currently on shift or roosting.
+4. **Checks the coin live — gently.** It makes a best-effort request to
+   pump.fun's public API with a short timeout. Whatever comes back is
+   printed on the card; a failure is reported but never stops the run.
+5. **Writes promo drafts.** It saves `promo-posts.txt` into the output
+   directory with a handful of original promo drafts mentioning $SHIFT,
+   Night Shift, make.fun and the bounty URL, ready for a human to post.
 
-`main.ts` is a promo toolkit (Node 22, standard library only):
+The program never signs anything, never sends a transaction and never
+spends funds. It reads, copies, prints and writes text — that is all.
 
-1. Reads `LAUNCH.json` from the repository root (via `MAKEFUN_BOT_DIR`, default `/bot`) and validates that `mint` and `create_signature` are plausible base58 values.
-2. Copies `LAUNCH.json` byte-for-byte to the output directory (`MAKEFUN_OUTPUT_DIR`, default `/output`) — this copy is mandatory and is the step the make.fun gate reads.
-3. Best-effort status lookup on pump.fun's public API and prints a coin status card (name, market cap, bonding-curve state). A network failure is never fatal.
-4. Writes `promo-posts.txt` into the output directory with ready-to-post promo drafts mentioning the coin, the bounty URL and make.fun.
+## Running it locally
 
-## Run it
+You need Node 22 or newer. From this repository's root:
 
-```bash
-mkdir -p out
+```sh
 MAKEFUN_BOT_DIR=. MAKEFUN_OUTPUT_DIR=out node main.ts
-cat out/LAUNCH.json
 ```
 
-No dependencies to install — Node 22 standard library only.
+`MAKEFUN_BOT_DIR` tells the program where `LAUNCH.json` lives (the
+make.fun sandbox uses `/bot`), and `MAKEFUN_OUTPUT_DIR` is where the
+mirrored `LAUNCH.json` and the `promo-posts.txt` drafts land (the
+sandbox uses `/output`). Both variables are optional outside the
+sandbox only in the sense that they have defaults — for a local run,
+set them as shown above.
 
-## License
+## Files in this repo
 
-MIT — see [`LICENSE`](./LICENSE).
+- `main.ts` — the promo runner described above.
+- `LAUNCH.json` — the launch record: mint plus create signature.
+- `metadata.json` — the coin metadata used at creation time.
+- `logo.png` — the Night Shift owl artwork.
+- `LICENSE` — the license for this repository.
+
+## The short version
+
+While the timeline dreams, the night shift ships, wins and stacks.
+
+**$SHIFT — punched in, never out.** 🦉
